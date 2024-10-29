@@ -44,7 +44,8 @@ To set up your local server:
 
 ## Starter version
 
-- To remove unnecessary components. This is a simplified version ([https://starter.minimals.cc/](https://starter.minimals.cc/))
+- To remove unnecessary components. This is a simplified version ([https://starter.mih
+nimals.cc/](https://starter.minimals.cc/))
 - Good to start a new project. You can copy components from the full version.
 - Make sure to install the dependencies exactly as compared to the full version.
 

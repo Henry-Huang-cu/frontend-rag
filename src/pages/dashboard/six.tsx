@@ -1,6 +1,7 @@
 import { Helmet } from 'react-helmet-async';
 
 import { CONFIG } from 'src/config-global';
+import { ChatView } from 'src/sections/blank/chatroom';
 
 import { BlankView } from 'src/sections/blank/view';
 
@@ -15,7 +16,7 @@ export default function Page() {
         <title> {metadata.title}</title>
       </Helmet>
 
-      <BlankView title="RAG Chatbot 6" />
+      <ChatView title="RAG Chatbot 6" />
     </>
   );
 }
