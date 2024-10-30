@@ -14,52 +14,73 @@ type Props = {
 };
 
 export function ChatView({ title = 'Blank' }: Props) {
-  const [sharedChats, setSharedChats] = useState<string[]>([]); // Shared聊天历史
-  const [personalChats, setPersonalChats] = useState<string[]>([]); // Personal聊天历史
-  const [newChatName, setNewChatName] = useState(''); // 新聊天名称
-  const [activeChat, setActiveChat] = useState<string | null>(null); // 当前活动聊天
-  const [chatMessages, setChatMessages] = useState<{ [key: string]: { position: string; text: string; id: string }[] }>({}); // 聊天内容
-  const [inputMessage, setInputMessage] = useState(''); // 输入消息
-  const [chatType, setChatType] = useState<'shared' | 'personal'>('shared'); // 聊天类型
+  const [sharedChats, setSharedChats] = useState<string[]>([]);
+  const [personalChats, setPersonalChats] = useState<string[]>([]);
+  const [newChatName, setNewChatName] = useState('');
+  const [activeChat, setActiveChat] = useState<string | null>(null);
+  const [chatMessages, setChatMessages] = useState<{ [key: string]: { position: string; text: string; id: string }[] }>({});
+  const [inputMessage, setInputMessage] = useState('');
+  const [chatType, setChatType] = useState<'shared' | 'personal'>('shared');
 
-  // 创建新的聊天
   const handleCreateChat = () => {
     if (newChatName.trim()) {
       if (chatType === 'shared') {
-        setSharedChats([...sharedChats, newChatName]); // 添加到Shared聊天历史
+        setSharedChats([...sharedChats, newChatName]);
       } else {
-        setPersonalChats([...personalChats, newChatName]); // 添加到Personal聊天历史
+        setPersonalChats([...personalChats, newChatName]);
       }
       setChatMessages((prev) => ({
         ...prev,
-        [newChatName]: [], // 初始化新的聊天消息
+        [newChatName]: [],
       }));
-      setNewChatName(''); // 清空输入框
+      setNewChatName('');
     }
   };
 
-  // 选择聊天
   const handleSelectChat = (chatName: string) => {
-    setActiveChat(chatName); // 设置当前活动聊天
+    setActiveChat(chatName);
   };
 
-  // 发送消息
   const handleSendMessage = () => {
     if (inputMessage.trim() && activeChat) {
       const newMessage = { position: 'right', text: inputMessage, id: 'You' };
       setChatMessages((prev) => ({
         ...prev,
-        [activeChat]: [...(prev[activeChat] || []), newMessage], // 将新消息添加到当前聊天
+        [activeChat]: [...(prev[activeChat] || []), newMessage],
       }));
-      setInputMessage(''); // 清空输入框
+
+      // 添加自动回复
+      const autoReply = generateAutoReply(inputMessage);
+      setChatMessages((prev) => ({
+        ...prev,
+        [activeChat]: [...(prev[activeChat] || []), autoReply],
+      }));
+
+      setInputMessage('');
     }
+  };
+
+  // 生成自动回复
+  const generateAutoReply = (userMessage: string) => {
+    let replyText = "I didn't understand that."; // 默认回复
+
+    // 简单的自动回复逻辑
+    if (userMessage.includes('hi') || userMessage.includes('hello')) {
+      replyText = "Hello! How can I assist you today?";
+    } else if (userMessage.includes('help')) {
+      replyText = "Sure, I’m here to help! What do you need?";
+    } else if (userMessage.includes('bye')) {
+      replyText = "Goodbye! Have a great day!";
+    }
+
+    return { position: 'left', text: replyText, id: 'Bot' };
   };
 
   return (
     <DashboardContent maxWidth="xl">
       <Typography variant="h4"> {title} </Typography>
 
-      <Box sx={{ display: 'flex', mt: 1, height: 700 }}>
+      <Box sx={{ display: 'flex', mt: 5, height: 600 }}>
         {/* 聊天历史区域 */}
         <Box
           sx={{
@@ -162,7 +183,7 @@ export function ChatView({ title = 'Blank' }: Props) {
               >
                 <Avatar
                   sx={{ width: 24, height: 24, marginRight: 1 }}
-                  src={msg.position === 'right' ? '' : 'https://i.pravatar.cc/300'}
+                  // src={msg.position === 'right' ? '' : 'https://i.pravatar.cc/300'}
                 />
                 <Box>
                   <Typography variant="body2" fontWeight="bold">
